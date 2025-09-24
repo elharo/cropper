@@ -1,2 +1,2 @@
 # cropper
-Simple Image Editing Toolss
+Simple Image Editing Tools
