@@ -103,7 +103,7 @@ class CropperAppCore {
         Simple Image Editing Tools
         Version 1.0
         
-        Copyright © 2024
+        Copyright © 2025 Elliotte Rusty Harold
         
         This is a skeleton macOS application demonstrating
         standard menu structure and Swift/AppKit patterns.

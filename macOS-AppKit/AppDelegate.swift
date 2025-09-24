@@ -117,7 +117,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func showAbout() {
         let alert = NSAlert()
         alert.messageText = "Cropper"
-        alert.informativeText = "Simple Image Editing Tools\n\nVersion 1.0\n\nCopyright © 2024"
+        alert.informativeText = "Simple Image Editing Tools\n\nVersion 1.0\n\nCopyright © 2025 Elliotte Rusty Harold"
         alert.alertStyle = .informational
         alert.addButton(withTitle: "OK")
         alert.runModal()
