@@ -1,11 +1,10 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 5.7
 import PackageDescription
 
 let package = Package(
     name: "Cropper",
     platforms: [
-        .macOS(.v11),
-        .iOS(.v14)
+        .macOS(.v11)
     ],
     products: [
         .executable(name: "Cropper", targets: ["Cropper"])
