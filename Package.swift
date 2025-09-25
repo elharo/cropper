@@ -14,11 +14,7 @@ let package = Package(
         .executableTarget(
             name: "Cropper",
             dependencies: [],
-            path: "Sources",
-            resources: [
-                .copy("../Info.plist")
-            ]
+            path: "Sources"
         )
-    ],
-    swiftLanguageVersions: [.v5]
+    ]
 )
