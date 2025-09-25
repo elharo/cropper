@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Cropper is a simple image editing tools project focused on Swift/iOS development. This repository provides utilities for basic image manipulation and cropping functionality.
+Cropper is a simple image editing tools project focused on Swift development. This repository provides utilities for basic image manipulation and cropping functionality.
 
 ## Development Guidelines
 
@@ -51,9 +51,7 @@ Cropper is a simple image editing tools project focused on Swift/iOS development
 
 ### Performance Guidelines
 
-- Optimize image processing operations for mobile devices
 - Use appropriate data structures for image manipulation
-- Consider memory constraints on iOS devices
 - Implement lazy loading where beneficial
 
 ## Specific to This Project
