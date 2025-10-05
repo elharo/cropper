@@ -1,3 +1,16 @@
+#if os(macOS)
+import AppKit
+
+@main
+struct CropperApp {
+    static func main() {
+        let app = NSApplication.shared
+        let delegate = AppDelegate()
+        app.delegate = delegate
+        app.run()
+    }
+}
+#else
 import Foundation
 
 @main
@@ -28,3 +41,4 @@ struct CropperApp {
         app.run()
     }
 }
+#endif

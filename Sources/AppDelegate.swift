@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -180,3 +181,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         alert.runModal()
     }
 }
+#endif

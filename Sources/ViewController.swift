@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 
 class ViewController: NSViewController {
@@ -75,3 +76,4 @@ class ViewController: NSViewController {
         ])
     }
 }
+#endif
