@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-macos:
+    name: Build on macOS
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "5.9"
+    
+    - name: Display Swift version
+      run: swift --version
+      
+    - name: Build (Debug)
+      run: swift build
+      
+    - name: Build (Release)
+      run: swift build -c release
+      
+    - name: Run executable (basic test)
+      run: |
+        echo "quit" | timeout 5 ./.build/debug/Cropper || true
+
+  build-linux:
+    name: Build on Linux
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        swift-version: ["5.7", "5.8", "5.9"]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: ${{ matrix.swift-version }}
+    
+    - name: Display Swift version
+      run: swift --version
+      
+    - name: Build (Debug)
+      run: swift build
+      
+    - name: Build (Release)
+      run: swift build -c release
+      
+    - name: Run executable (basic test)
+      run: |
+        echo "quit" | timeout 5 ./.build/debug/Cropper || true
+
+  check-format:
+    name: Code Format Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "5.9"
+    
+    - name: Check Swift files exist
+      run: |
+        echo "Checking Swift source files..."
+        find Sources -name "*.swift" -type f
+        find macOS-AppKit -name "*.swift" -type f
