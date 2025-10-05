@@ -62,3 +62,4 @@ Cropper is a simple image editing tools project focused on Swift development. Th
 - Design APIs that are intuitive for other developers to use
 - This is only for Mac OS X. It only runs and builds on Mac OS X. It should not have any code or features meant for other platforms like Linux ir iOS.
 - It is a GUI application, not a command line application. It can build at the command line but it only launches in a GUI.
+- Use Swift 6.2.
