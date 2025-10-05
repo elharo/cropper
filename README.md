@@ -41,18 +41,22 @@ The application implements a complete menu bar with the following structure:
 ```
 cropper/
 ├── Package.swift              # Swift Package Manager configuration
-├── Sources/                   # Cross-platform Swift source files
-│   ├── CropperApp.swift      # Main application entry point
-│   └── CropperAppCore.swift  # Core application logic
-├── macOS-AppKit/             # macOS-specific AppKit implementation
-│   ├── CropperApp-macOS.swift # macOS AppKit main entry
-│   ├── AppDelegate.swift      # AppKit application delegate
-│   └── ViewController.swift   # Main view controller
+├── Sources/                   # Source files (auto-detects platform)
+│   ├── CropperApp.swift      # Main entry point (GUI on macOS, CLI elsewhere)
+│   ├── CropperAppCore.swift  # Core application logic
+│   ├── AppDelegate.swift     # AppKit application delegate (macOS only)
+│   └── ViewController.swift  # Main view controller (macOS only)
+├── macOS-AppKit/             # Reference implementation files
+│   ├── CropperApp-macOS.swift # Reference: macOS AppKit main entry
+│   ├── AppDelegate.swift      # Reference: AppKit application delegate
+│   └── ViewController.swift   # Reference: Main view controller
 ├── Info.plist                # macOS app bundle information
 ├── Makefile                  # Build automation
 ├── build.sh                  # Build script
 └── README.md                 # This documentation
 ```
+
+The application uses conditional compilation (`#if os(macOS)`) to automatically build the appropriate version based on your platform. The `macOS-AppKit/` directory contains reference files showing the macOS-specific implementation.
 
 ## Building and Running
 
@@ -109,21 +113,25 @@ chmod +x build.sh
 
 ### macOS GUI Version
 
-On macOS with AppKit support, you can build the full GUI version:
+The application automatically detects the platform and builds the appropriate version:
 
-1. **Using Xcode:**
-   - Open the project in Xcode
-   - Replace the main source files with those from `macOS-AppKit/`
-   - Build and run normally (⌘R)
+- **On macOS**: Builds with full AppKit GUI support automatically
+- **On Linux/Other**: Builds with command-line simulation mode
 
-2. **Command Line with AppKit:**
-   ```bash
-   # Copy macOS files to Sources directory
-   cp macOS-AppKit/* Sources/
-   
-   # Build and run
-   swift build && ./.build/debug/Cropper
-   ```
+Simply build and run using any of the methods above. No additional setup is required!
+
+```bash
+# On macOS, this will launch the full GUI application
+swift build && ./.build/debug/Cropper
+
+# Or using Make
+make build && make run
+
+# Or using the build script
+./build.sh run
+```
+
+The GUI will display a window with the Cropper interface and functional menu bar.
 
 ## Development
 
@@ -165,12 +173,13 @@ Cropper> quit      # Exit application
 
 ### Cross-Platform Design
 
-The application is designed to work across different environments:
+The application uses conditional compilation to provide the best experience on each platform:
 
+- **Conditional Compilation**: Uses `#if os(macOS)` to automatically select the right implementation
 - **Foundation-based Core**: Uses only Foundation framework for maximum compatibility
-- **AppKit UI Layer**: Separate macOS-specific GUI implementation
-- **Command-Line Interface**: Provides functionality testing without GUI requirements
-- **Modular Structure**: Easy to extend with platform-specific implementations
+- **AppKit UI Layer**: Full GUI with AppKit automatically enabled on macOS
+- **Command-Line Interface**: Simulation mode on non-macOS platforms for testing
+- **Single Source Tree**: All code in one place, no manual file copying required
 
 ### Standards Compliance
 
@@ -183,22 +192,28 @@ The application is designed to work across different environments:
 
 ### Common Issues
 
-1. **Build Errors on Non-macOS Systems:**
-   - The cross-platform version will work anywhere with Swift
-   - AppKit-specific features require macOS
+1. **"No GUI" on macOS:**
+   - The application automatically detects macOS and builds with GUI support
+   - Simply run `swift build && ./.build/debug/Cropper`
+   - No manual file copying or setup is required
+   - If running in Xcode, make sure to run the app (⌘R), not just build it
 
-2. **Missing Xcode:**
+2. **Build Errors on Non-macOS Systems:**
+   - The application will automatically build in simulation mode on Linux/Windows
+   - This is expected behavior - AppKit is only available on macOS
+
+3. **Missing Xcode:**
    - Swift Package Manager works without Xcode
-   - GUI features require Xcode or command line tools
+   - GUI features work from command line with Xcode Command Line Tools installed
 
-3. **Permission Issues:**
+4. **Permission Issues:**
    - Make sure build script is executable: `chmod +x build.sh`
    - Check write permissions for build directory
 
 ### Platform-Specific Notes
 
-- **macOS**: Full GUI functionality available
-- **Linux/Windows**: Command-line simulation mode only
+- **macOS**: Full GUI functionality with AppKit (automatic)
+- **Linux/Windows**: Command-line simulation mode (automatic)
 - **iOS**: Would require UIKit adaptation (not included)
 
 ## Contributing
