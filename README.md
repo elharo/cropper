@@ -1,5 +1,7 @@
 # Cropper
 
+[![CI](https://github.com/elharo/cropper/actions/workflows/ci.yml/badge.svg)](https://github.com/elharo/cropper/actions/workflows/ci.yml)
+
 Simple Image Editing Tools - A macOS Skeleton Application
 
 ## Overview
