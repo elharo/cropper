@@ -67,6 +67,24 @@ The application is macOS-only and uses AppKit for the GUI. The `macOS-AppKit/` d
 - Swift 5.8 or later
 - Xcode Command Line Tools
 
+### Build Output
+
+The build process creates a complete macOS application bundle:
+
+```
+.build/release/Cropper.app/
+├── Contents/
+│   ├── Info.plist          # App metadata
+│   ├── MacOS/
+│   │   └── Cropper         # Executable
+│   └── Resources/          # (for future assets)
+```
+
+This `.app` bundle is a standard macOS application that can be:
+- ✅ Double-clicked from Finder to launch
+- ✅ Moved to `/Applications` folder
+- ✅ Distributed to other Macs
+
 ### Build Methods
 
 #### Option 1: Using Make (Recommended)
