@@ -83,7 +83,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         editMenu.addItem(NSMenuItem.separator())
         let cutItem = editMenu.addItem(withTitle: "Cut", action: #selector(cut), keyEquivalent: "x")
         cutItem.isEnabled = false
-        let copyItem = editMenu.addItem(withTitle: "Copy", action: #selector(copy), keyEquivalent: "c")
+        let copyItem = editMenu.addItem(withTitle: "Copy", action: #selector(performCopy), keyEquivalent: "c")
         copyItem.isEnabled = false
         let pasteItem = editMenu.addItem(withTitle: "Paste", action: #selector(paste), keyEquivalent: "v")
         pasteItem.isEnabled = false
@@ -156,7 +156,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // TODO: Implement cut functionality
     }
     
-    @objc func copy() {
+    @objc func performCopy() {
         // TODO: Implement copy functionality
     }
     
