@@ -48,17 +48,17 @@ cropper/
 │   ├── CropperAppCore.swift  # Core application logic
 │   ├── AppDelegate.swift     # AppKit application delegate (macOS only)
 │   └── ViewController.swift  # Main view controller (macOS only)
-├── macOS-AppKit/             # Reference implementation files
-│   ├── CropperApp-macOS.swift # Reference: macOS AppKit main entry
-│   ├── AppDelegate.swift      # Reference: AppKit application delegate
-│   └── ViewController.swift   # Reference: Main view controller
+├── macOS-AppKit/             # Reference implementation files (not compiled)
+│   ├── CropperApp-macOS.swift.reference # Reference: macOS AppKit main entry
+│   ├── AppDelegate.swift.reference      # Reference: AppKit application delegate
+│   └── ViewController.swift.reference   # Reference: Main view controller
 ├── Info.plist                # macOS app bundle information
 ├── Makefile                  # Build automation
 ├── build.sh                  # Build script
 └── README.md                 # This documentation
 ```
 
-The application uses conditional compilation (`#if os(macOS)`) to automatically build the appropriate version based on your platform. The `macOS-AppKit/` directory contains reference files showing the macOS-specific implementation.
+The application uses conditional compilation (`#if os(macOS)`) to automatically build the appropriate version based on your platform. The `macOS-AppKit/` directory contains reference files (with `.reference` extension) showing the pure macOS-specific implementation without conditional compilation. These files are not compiled and serve as documentation.
 
 ## Building and Running
 
