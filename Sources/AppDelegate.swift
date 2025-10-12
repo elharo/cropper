@@ -69,8 +69,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         saveItem.isEnabled = false
         let saveAsItem = fileMenu.addItem(withTitle: "Save As...", action: #selector(saveAsFile), keyEquivalent: "S")
         saveAsItem.isEnabled = false
-        fileMenu.addItem(NSMenuItem.separator())
-        fileMenu.addItem(withTitle: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         
         // Edit Menu
         let editMenuItem = NSMenuItem(title: "Edit", action: nil, keyEquivalent: "")
