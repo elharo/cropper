@@ -4,6 +4,7 @@ import AppKit
 class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
     var contentViewController: ViewController!
+    var imageWindowControllers: [ImageWindowController] = []
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Create the main window
@@ -64,8 +65,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let newItem = fileMenu.addItem(withTitle: "New", action: nil, keyEquivalent: "n")
         newItem.isEnabled = false
         fileMenu.addItem(NSMenuItem.separator())
-        let openItem = fileMenu.addItem(withTitle: "Open...", action: nil, keyEquivalent: "o")
-        openItem.isEnabled = false
+        fileMenu.addItem(withTitle: "Open...", action: #selector(openFile), keyEquivalent: "o")
         fileMenu.addItem(NSMenuItem.separator())
         fileMenu.addItem(withTitle: "Close", action: #selector(closeWindow), keyEquivalent: "w")
         fileMenu.addItem(NSMenuItem.separator())
@@ -133,11 +133,53 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func openFile() {
-        // TODO: Implement open file functionality
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Open Image"
+        openPanel.canChooseFiles = true
+        openPanel.canChooseDirectories = false
+        openPanel.allowsMultipleSelection = false
+        openPanel.allowedContentTypes = [.png, .jpeg]
+        
+        openPanel.begin { [weak self] response in
+            guard response == .OK, let url = openPanel.url else { return }
+            self?.openImageFile(at: url)
+        }
+    }
+    
+    private func openImageFile(at url: URL) {
+        guard let image = NSImage(contentsOf: url) else {
+            let alert = NSAlert()
+            alert.messageText = "Failed to Open Image"
+            alert.informativeText = "The selected file could not be opened as an image."
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: "OK")
+            alert.runModal()
+            return
+        }
+        
+        let filename = url.lastPathComponent
+        let windowController = ImageWindowController(image: image, filename: filename)
+        
+        // Set up window close notification to clean up the controller
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(imageWindowWillClose(_:)),
+            name: NSWindow.willCloseNotification,
+            object: windowController.window
+        )
+        
+        imageWindowControllers.append(windowController)
+        windowController.showWindow(nil)
+    }
+    
+    @objc private func imageWindowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow else { return }
+        imageWindowControllers.removeAll { $0.window == window }
     }
     
     @objc func closeWindow() {
-        window.performClose(nil)
+        // Close the key window (the currently focused window)
+        NSApp.keyWindow?.performClose(nil)
     }
     
     @objc func saveFile() {
