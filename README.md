@@ -63,7 +63,7 @@ The application is macOS-only and uses AppKit for the GUI. The `macOS-AppKit/` d
 
 ### Prerequisites
 
-- macOS 11.0 or later
+- macOS 13.0 or later
 - Swift 5.8 or later
 - Xcode Command Line Tools
 
@@ -179,7 +179,7 @@ The application is built as a native macOS application using AppKit:
 
 ### Platform-Specific Notes
 
-- **macOS**: This application is macOS-only and requires macOS 11.0 or later
+- **macOS**: This application is macOS-only and requires macOS 13.0 or later
 - **Other Platforms**: The application will not build on Linux/Windows as it requires AppKit
 
 ## Contributing

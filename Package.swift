@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "Cropper",
     platforms: [
-        .macOS(.v11)
+        .macOS(.v13)
     ],
     products: [
         .executable(name: "Cropper", targets: ["Cropper"])
