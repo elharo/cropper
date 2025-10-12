@@ -67,64 +67,85 @@ The application is macOS-only and uses AppKit for the GUI. The `macOS-AppKit/` d
 - Swift 5.8 or later
 - Xcode Command Line Tools
 
-### Build Methods
+### Build Output
 
-#### Option 1: Using Swift Package Manager (Recommended)
+The build process creates a complete macOS application bundle:
 
-```bash
-# Build the application
-swift build
-
-# Run the application
-./.build/debug/Cropper
-
-# Build in release mode
-swift build -c release
-./.build/release/Cropper
+```
+.build/release/Cropper.app/
+├── Contents/
+│   ├── Info.plist          # App metadata
+│   ├── MacOS/
+│   │   └── Cropper         # Executable
+│   └── Resources/          # (for future assets)
 ```
 
-#### Option 2: Using Make
+This `.app` bundle is a standard macOS application that can be:
+- ✅ Double-clicked from Finder to launch
+- ✅ Moved to `/Applications` folder
+- ✅ Distributed to other Macs
+
+### Build Methods
+
+#### Option 1: Using Make (Recommended)
 
 ```bash
-# Build the application
-make build
+# Build the application bundle
+make
 
-# Build and run
+# This creates .build/release/Cropper.app which you can:
+# - Double-click to launch
+# - Move to /Applications for permanent installation
+
+# Build and run immediately
 make run
-
-# Clean build artifacts
-make clean
 
 # Install to ~/Applications
 make install
+
+# Clean build artifacts
+make clean
 ```
 
-#### Option 3: Using the Build Script
+#### Option 2: Using the Build Script
 
 ```bash
-# Make the build script executable
-chmod +x build.sh
-
-# Build the application
+# Build the application bundle
 ./build.sh
 
-# Build and run immediately
+# This creates .build/release/Cropper.app
+
+# Build and open immediately
 ./build.sh run
+```
+
+#### Option 3: Using Swift Package Manager Directly
+
+```bash
+# Build just the executable (not recommended - doesn't create .app)
+swift build -c release
+
+# The executable will be at ./.build/release/Cropper
+# For a proper Mac app bundle, use Make or build.sh instead
 ```
 
 ### Running the Application
 
-Simply build and run using any of the methods above:
+The build process creates a complete macOS application bundle (`.app`) that can be:
+
+1. **Double-clicked from Finder** to launch
+2. **Moved to /Applications** for permanent installation
+3. **Opened from Terminal**:
 
 ```bash
-# Build and launch the GUI application
-swift build && ./.build/debug/Cropper
+# Using Make
+make run
 
-# Or using Make
-make build && make run
-
-# Or using the build script
+# Using build script
 ./build.sh run
+
+# Directly
+open .build/release/Cropper.app
 ```
 
 The GUI will display a window with the Cropper interface and functional menu bar.
