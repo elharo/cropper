@@ -57,17 +57,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let fileMenu = NSMenu(title: "File")
         fileMenuItem.submenu = fileMenu
         
-        let newItem = fileMenu.addItem(withTitle: "New", action: #selector(newFile), keyEquivalent: "n")
+        let newItem = fileMenu.addItem(withTitle: "New", action: nil, keyEquivalent: "n")
         newItem.isEnabled = false
         fileMenu.addItem(NSMenuItem.separator())
-        let openItem = fileMenu.addItem(withTitle: "Open...", action: #selector(openFile), keyEquivalent: "o")
+        let openItem = fileMenu.addItem(withTitle: "Open...", action: nil, keyEquivalent: "o")
         openItem.isEnabled = false
         fileMenu.addItem(NSMenuItem.separator())
         fileMenu.addItem(withTitle: "Close", action: #selector(closeWindow), keyEquivalent: "w")
         fileMenu.addItem(NSMenuItem.separator())
-        let saveItem = fileMenu.addItem(withTitle: "Save", action: #selector(saveFile), keyEquivalent: "s")
+        let saveItem = fileMenu.addItem(withTitle: "Save", action: nil, keyEquivalent: "s")
         saveItem.isEnabled = false
-        let saveAsItem = fileMenu.addItem(withTitle: "Save As...", action: #selector(saveAsFile), keyEquivalent: "S")
+        let saveAsItem = fileMenu.addItem(withTitle: "Save As...", action: nil, keyEquivalent: "S")
         saveAsItem.isEnabled = false
         
         // Edit Menu
@@ -76,21 +76,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let editMenu = NSMenu(title: "Edit")
         editMenuItem.submenu = editMenu
         
-        let undoItem = editMenu.addItem(withTitle: "Undo", action: #selector(undo), keyEquivalent: "z")
+        let undoItem = editMenu.addItem(withTitle: "Undo", action: nil, keyEquivalent: "z")
         undoItem.isEnabled = false
-        let redoItem = editMenu.addItem(withTitle: "Redo", action: #selector(redo), keyEquivalent: "Z")
+        let redoItem = editMenu.addItem(withTitle: "Redo", action: nil, keyEquivalent: "Z")
         redoItem.isEnabled = false
         editMenu.addItem(NSMenuItem.separator())
-        let cutItem = editMenu.addItem(withTitle: "Cut", action: #selector(cut), keyEquivalent: "x")
+        let cutItem = editMenu.addItem(withTitle: "Cut", action: nil, keyEquivalent: "x")
         cutItem.isEnabled = false
-        let copyItem = editMenu.addItem(withTitle: "Copy", action: #selector(performCopy), keyEquivalent: "c")
+        let copyItem = editMenu.addItem(withTitle: "Copy", action: nil, keyEquivalent: "c")
         copyItem.isEnabled = false
-        let pasteItem = editMenu.addItem(withTitle: "Paste", action: #selector(paste), keyEquivalent: "v")
+        let pasteItem = editMenu.addItem(withTitle: "Paste", action: nil, keyEquivalent: "v")
         pasteItem.isEnabled = false
-        let deleteItem = editMenu.addItem(withTitle: "Delete", action: #selector(delete), keyEquivalent: "")
+        let deleteItem = editMenu.addItem(withTitle: "Delete", action: nil, keyEquivalent: "")
         deleteItem.isEnabled = false
         editMenu.addItem(NSMenuItem.separator())
-        let selectAllItem = editMenu.addItem(withTitle: "Select All", action: #selector(selectAll), keyEquivalent: "a")
+        let selectAllItem = editMenu.addItem(withTitle: "Select All", action: nil, keyEquivalent: "a")
         selectAllItem.isEnabled = false
         
         // Window Menu
