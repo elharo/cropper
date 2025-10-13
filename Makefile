@@ -36,7 +36,7 @@ test: app
 	@echo ""
 	@echo "Running tests..."
 	@set -o pipefail && xcodebuild test \
-		-scheme Cropper-Package \
+		-scheme Cropper \
 		-destination 'platform=macOS' \
 		-only-testing:CropperUITests 2>&1 | \
 		tee xcodebuild.log | \
