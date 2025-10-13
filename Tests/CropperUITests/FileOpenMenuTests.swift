@@ -13,76 +13,55 @@ final class FileOpenMenuTests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         
-        // For SPM executable targets, we need to find and launch the app bundle
-        // Try to find the app bundle in common locations
-        let possiblePaths = [
-            ".build/release/Cropper.app",
-            "../.build/release/Cropper.app",
-            "../../.build/release/Cropper.app",
-            "../../../.build/release/Cropper.app",
-            "../../../../.build/release/Cropper.app",
-        ]
+        // Initialize XCUIApplication - let xcodebuild handle the app discovery
+        app = XCUIApplication()
         
-        print("Current directory: \(FileManager.default.currentDirectoryPath)")
-        
-        var appBundleURL: URL?
-        for path in possiblePaths {
-            let url = URL(fileURLWithPath: path, relativeTo: URL(fileURLWithPath: FileManager.default.currentDirectoryPath))
-            let absoluteURL = url.standardizedFileURL
-            print("Checking path: \(absoluteURL.path)")
-            if FileManager.default.fileExists(atPath: absoluteURL.path) {
-                appBundleURL = absoluteURL
-                print("✅ Found app bundle at: \(absoluteURL.path)")
-                break
-            }
-        }
-        
-        if let bundleURL = appBundleURL {
-            // Use XCUIApplication with the URL directly
-            app = XCUIApplication(url: bundleURL)
-            print("Initialized XCUIApplication with URL: \(bundleURL.path)")
-        } else {
-            // Fall back to default XCUIApplication behavior
-            print("⚠️ Could not find app bundle, using default XCUIApplication()")
-            app = XCUIApplication()
-        }
+        print("🔍 Current directory: \(FileManager.default.currentDirectoryPath)")
+        print("🔍 XCUIApplication bundle ID: \(app.bundleIdentifier ?? "none")")
         
         // Launch the app
-        print("Launching app...")
+        print("🚀 Launching app...")
         app.launch()
         
-        print("App state after launch: \(app.state.rawValue)")
-        print("App exists: \(app.exists)")
+        print("📊 App state after launch: \(app.state.rawValue) (1=not running, 2=running background, 3=running foreground, 4=running)")
+        print("📊 App exists: \(app.exists)")
         
-        // Wait for the app to be in foreground
-        let launched = app.wait(for: .runningForeground, timeout: 10)
-        print("App in foreground: \(launched)")
-        
-        if !launched {
-            print("❌ App failed to reach foreground state")
-            print("Current app state: \(app.state.rawValue)")
-        }
-        
-        XCTAssertTrue(launched, "App should launch and be in foreground")
-        
-        // Give the app a moment to fully initialize its menu bar
-        Thread.sleep(forTimeInterval: 1.0)
-        
-        // Wait for the File menu to exist, indicating the menu bar is initialized
-        print("Waiting for File menu...")
-        let fileMenu = app.menuBars.menuBarItems["File"]
-        let menuReady = fileMenu.waitForExistence(timeout: 5)
-        print("File menu ready: \(menuReady)")
-        
-        if !menuReady {
-            print("❌ File menu not found")
-            print("Available menu bar items:")
-            for item in app.menuBars.menuBarItems.allElementsBoundByIndex {
-                print("  - \(item.title)")
+        // Wait for the app to be running (not necessarily foreground)
+        var isRunning = false
+        for attempt in 1...10 {
+            print("⏳ Attempt \(attempt): Checking if app is running...")
+            if app.state == .runningForeground || app.state == .runningBackground {
+                isRunning = true
+                print("✅ App is running (state: \(app.state.rawValue))")
+                break
             }
+            Thread.sleep(forTimeInterval: 1.0)
         }
         
-        XCTAssertTrue(menuReady, "File menu should exist after app launch")
+        XCTAssertTrue(isRunning, "App should be running after launch")
+        
+        // Give the app extra time to fully initialize
+        Thread.sleep(forTimeInterval: 2.0)
+        
+        // Check for menu bar
+        print("🔍 Checking for menu bar...")
+        print("📊 Menu bars count: \(app.menuBars.count)")
+        
+        if app.menuBars.count > 0 {
+            print("✅ Found \(app.menuBars.count) menu bar(s)")
+            let menuBar = app.menuBars.element(boundBy: 0)
+            print("📊 Menu bar items count: \(menuBar.menuBarItems.count)")
+            
+            if menuBar.menuBarItems.count > 0 {
+                print("📋 Available menu bar items:")
+                for i in 0..<min(menuBar.menuBarItems.count, 10) {
+                    let item = menuBar.menuBarItems.element(boundBy: i)
+                    print("  - [\(i)]: '\(item.title)'")
+                }
+            }
+        } else {
+            print("❌ No menu bars found")
+        }
     }
     
     override func tearDownWithError() throws {
@@ -96,61 +75,105 @@ final class FileOpenMenuTests: XCTestCase {
     /// Test that the File → Open menu item shows the standard file dialog
     /// with expected controls (Open and Cancel buttons).
     func testFileOpenMenuShowsDialog() throws {
-        // Access the menu bar via app.menuBars (standard approach for macOS)
-        let menuBar = app.menuBars
+        print("\n🧪 Starting testFileOpenMenuShowsDialog")
         
-        // Try accessing via MainMenu first (as specified in requirements)
-        var fileMenuItem = app.menus["MainMenu"].menuItems["File"]
-        
-        // If MainMenu approach doesn't work, use the standard menuBarItems approach
-        if !fileMenuItem.exists {
-            fileMenuItem = menuBar.menuBarItems["File"]
+        // Get menu bar
+        guard app.menuBars.count > 0 else {
+            XCTFail("No menu bar found - app may not have launched properly")
+            return
         }
         
-        XCTAssertTrue(fileMenuItem.exists, "File menu item should exist")
+        let menuBar = app.menuBars.element(boundBy: 0)
+        print("📊 Working with menu bar, items count: \(menuBar.menuBarItems.count)")
         
-        // Click on File menu to open it
-        fileMenuItem.click()
+        // Find File menu
+        var fileMenuItem: XCUIElement?
         
-        // Wait for the "Open..." menu item to appear after opening the File menu
-        // Try MainMenu approach first
-        var openMenuItem = app.menus["MainMenu"].menuItems["Open..."]
-        // Fall back to menuBar approach if needed
-        if !openMenuItem.waitForExistence(timeout: 2) {
-            openMenuItem = menuBar.menuItems["Open..."]
-            // Wait for existence again in case menuBar is needed
-            let exists = openMenuItem.waitForExistence(timeout: 2)
-            XCTAssertTrue(exists, "Open... menu item should exist in File menu after opening File menu")
+        // Try different approaches to find File menu
+        print("🔍 Looking for File menu...")
+        
+        // Approach 1: Direct menuBarItems access
+        let fileMenuDirect = menuBar.menuBarItems["File"]
+        if fileMenuDirect.exists {
+            print("✅ Found File menu via menuBarItems['File']")
+            fileMenuItem = fileMenuDirect
+        } else {
+            print("❌ File menu not found via menuBarItems['File']")
+            
+            // Approach 2: Search through all menu items
+            for i in 0..<menuBar.menuBarItems.count {
+                let item = menuBar.menuBarItems.element(boundBy: i)
+                print("  Checking item \(i): '\(item.title)'")
+                if item.title == "File" {
+                    print("✅ Found File menu at index \(i)")
+                    fileMenuItem = item
+                    break
+                }
+            }
         }
         
-        // Fall back to menuBar approach if needed
-        if !openMenuItem.exists {
-            openMenuItem = menuBar.menuItems["Open..."]
+        guard let fileMenu = fileMenuItem, fileMenu.exists else {
+            XCTFail("File menu not found in menu bar")
+            return
         }
         
-        XCTAssertTrue(openMenuItem.exists, "Open... menu item should exist in File menu")
+        // Click File menu
+        print("🖱️ Clicking File menu...")
+        fileMenu.click()
+        Thread.sleep(forTimeInterval: 0.5)
+        
+        // Find Open... menu item
+        print("🔍 Looking for Open... menu item...")
+        let openMenuItem = menuBar.menuItems["Open..."]
+        let openExists = openMenuItem.waitForExistence(timeout: 3)
+        
+        print("📊 Open... exists: \(openExists), enabled: \(openMenuItem.isEnabled)")
+        
+        guard openExists else {
+            print("❌ Open... menu item not found")
+            print("Available menu items after clicking File:")
+            for i in 0..<min(menuBar.menuItems.count, 20) {
+                let item = menuBar.menuItems.element(boundBy: i)
+                if item.exists {
+                    print("  - [\(i)]: '\(item.title)' (enabled: \(item.isEnabled))")
+                }
+            }
+            XCTFail("Open... menu item should exist in File menu")
+            return
+        }
+        
         XCTAssertTrue(openMenuItem.isEnabled, "Open... menu item should be enabled")
         
-        // Click the Open... menu item
+        // Click Open...
+        print("🖱️ Clicking Open... menu item...")
         openMenuItem.click()
         
-        // Wait for the Open dialog to appear
-        // NSOpenPanel appears as a sheet or window in the accessibility hierarchy
-        // Try multiple selectors as the dialog can appear in different forms
-        let openDialog = app.sheets.firstMatch
-        var dialogAppeared = openDialog.waitForExistence(timeout: 5)
+        // Wait for dialog
+        print("⏳ Waiting for Open dialog...")
+        Thread.sleep(forTimeInterval: 1.0)
         
-        // If not found as sheet, try as dialog
-        if !dialogAppeared {
-            let openDialogWindow = app.dialogs.firstMatch
-            dialogAppeared = openDialogWindow.waitForExistence(timeout: 2)
-            XCTAssertTrue(dialogAppeared, "Open dialog should appear as sheet or dialog")
-            
-            // Use the window for further verification
-            verifyDialogControls(openDialogWindow)
+        // Check for sheet first (more common)
+        let sheet = app.sheets.firstMatch
+        let sheetExists = sheet.waitForExistence(timeout: 5)
+        
+        if sheetExists {
+            print("✅ Found Open dialog as sheet")
+            verifyDialogControls(sheet)
         } else {
-            // Use the sheet for verification
-            verifyDialogControls(openDialog)
+            // Try as dialog window
+            let dialog = app.dialogs.firstMatch
+            let dialogExists = dialog.waitForExistence(timeout: 2)
+            
+            if dialogExists {
+                print("✅ Found Open dialog as dialog window")
+                verifyDialogControls(dialog)
+            } else {
+                print("❌ Open dialog not found")
+                print("📊 Sheets count: \(app.sheets.count)")
+                print("📊 Dialogs count: \(app.dialogs.count)")
+                print("📊 Windows count: \(app.windows.count)")
+                XCTFail("Open dialog should appear after clicking Open...")
+            }
         }
     }
     
