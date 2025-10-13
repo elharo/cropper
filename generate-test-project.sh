@@ -1,24 +1,24 @@
 #!/bin/bash
 
-# Generate Xcode project with UI testing configuration
+# Open the Swift Package in Xcode for testing
 set -e
 
-echo "🔧 Generating Xcode project for testing..."
+echo "🔧 Opening Swift Package in Xcode..."
 
-# Generate the base Xcode project
-swift package generate-xcodeproj
+PACKAGE="Package.swift"
 
-PROJECT="Cropper.xcodeproj"
-
-if [ ! -d "$PROJECT" ]; then
-    echo "❌ Failed to generate Xcode project"
+if [ ! -f "$PACKAGE" ]; then
+    echo "❌ Package.swift not found"
     exit 1
 fi
 
-echo "✅ Xcode project generated: $PROJECT"
+# Open the package in Xcode
+open "$PACKAGE"
+
+echo "✅ Package opened in Xcode"
 echo ""
-echo "📝 To run UI tests:"
-echo "  1. Open $PROJECT in Xcode"
+echo "📝 To run UI tests in Xcode:"
+echo "  1. Wait for Xcode to open the package"
 echo "  2. Select the CropperUITests scheme"
 echo "  3. Press Cmd+U to run tests"
 echo ""

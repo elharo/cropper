@@ -26,18 +26,15 @@ make test
 ```
 
 This command will:
-1. Generate an Xcode project (if not already present)
-2. Build the application bundle
-3. Run the UI tests using xcodebuild
+1. Build the application bundle
+2. Run the UI tests using xcodebuild with Swift Package Manager
 
 ### From Xcode
 
-```bash
-# Generate Xcode project
-swift package generate-xcodeproj
+Open the Package.swift file in Xcode:
 
-# Open in Xcode
-open Cropper.xcodeproj
+```bash
+open Package.swift
 ```
 
 Then:
@@ -74,7 +71,7 @@ UI tests run in GitHub Actions on macOS runners. Note that:
 If tests fail with app launch errors:
 1. Ensure the app bundle is built: `make app`
 2. Verify the bundle exists: `ls -la .build/release/Cropper.app`
-3. Check Xcode project was generated: `ls -la Cropper.xcodeproj`
+3. Check that xcodebuild is available: `which xcodebuild`
 
 ### Tests Timeout
 
