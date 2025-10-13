@@ -59,7 +59,7 @@ Cropper is a simple image editing tools project focused on Swift development. Th
 
 - Code is typically built and run from the terminal.
 - Code can be edited, built, and run from the command line.
-- XCode might be used to work on this project but is never required. 
+- Xcode might be used to work on this project but is never required. 
 
 ## Specific to This Project
 
