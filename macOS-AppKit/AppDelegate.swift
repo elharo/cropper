@@ -64,7 +64,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let newItem = fileMenu.addItem(withTitle: "New", action: nil, keyEquivalent: "n")
         newItem.isEnabled = false
         fileMenu.addItem(NSMenuItem.separator())
-        fileMenu.addItem(withTitle: "Open...", action: #selector(openFile), keyEquivalent: "o")
+        let openItem = fileMenu.addItem(withTitle: "Open...", action: #selector(openFile), keyEquivalent: "o")
+        openItem.target = self
         fileMenu.addItem(NSMenuItem.separator())
         fileMenu.addItem(withTitle: "Close", action: #selector(closeWindow), keyEquivalent: "w")
         fileMenu.addItem(NSMenuItem.separator())
