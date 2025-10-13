@@ -52,10 +52,35 @@ jobs:
       run: |
         echo "quit" | timeout 5 ./.build/debug/Cropper || true
       
+    - name: Setup display for UI tests
+      run: |
+        # GitHub Actions macOS runners have a GUI available, but we need to ensure it's active
+        # Check if WindowServer is running
+        if pgrep -x "WindowServer" > /dev/null; then
+          echo "✅ WindowServer is running"
+        else
+          echo "⚠️ WindowServer not detected, UI tests may not work"
+        fi
+        
+        # Set DISPLAY if not set
+        if [ -z "$DISPLAY" ]; then
+          export DISPLAY=:0
+          echo "Set DISPLAY=:0"
+        fi
+        
+        # List available displays
+        echo "Available displays:"
+        system_profiler SPDisplaysDataType || true
+    
     - name: Run UI tests
       run: |
         echo "⚠️  UI tests require graphical environment"
         echo "Running tests with make test..."
+        
+        # Ensure we have GUI access
+        export DISPLAY=:0
+        
+        # Run tests
         make test || {
           echo "❌ UI tests failed or could not run"
           echo "Note: UI tests require a non-headless macOS environment"
