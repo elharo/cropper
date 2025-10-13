@@ -1,4 +1,5 @@
 import XCTest
+import AppKit
 
 /// UI tests for the File → Open menu functionality.
 /// These tests verify that the File menu's Open command correctly displays
@@ -12,26 +13,56 @@ final class FileOpenMenuTests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         
-        // Initialize the application
-        app = XCUIApplication()
+        // For SPM executable targets, we need to launch the app bundle manually
+        // Try to find the app bundle in common locations
+        let possiblePaths = [
+            ".build/release/Cropper.app",
+            "../../../.build/release/Cropper.app",
+            "../../../../.build/release/Cropper.app",
+            FileManager.default.currentDirectoryPath + "/.build/release/Cropper.app"
+        ]
         
-        // Print debug info
-        print("App bundle identifier: \(app.bundleIdentifier ?? "none")")
-        print("App state before launch: \(app.state.rawValue)")
+        var appBundlePath: String?
+        for path in possiblePaths {
+            let url = URL(fileURLWithPath: path)
+            if FileManager.default.fileExists(atPath: url.path) {
+                appBundlePath = url.path
+                print("Found app bundle at: \(appBundlePath!)")
+                break
+            }
+        }
         
-        // Set launch arguments if needed for testing
-        app.launchArguments = []
+        if let bundlePath = appBundlePath {
+            // Launch the app using NSWorkspace first to ensure it's running
+            let bundleURL = URL(fileURLWithPath: bundlePath)
+            let configuration = NSWorkspace.OpenConfiguration()
+            configuration.activates = true
+            
+            // Launch the app
+            NSWorkspace.shared.openApplication(at: bundleURL, configuration: configuration) { runningApp, error in
+                if let error = error {
+                    print("Failed to launch app: \(error)")
+                }
+            }
+            
+            // Give it a moment to launch
+            Thread.sleep(forTimeInterval: 2.0)
+            
+            // Now connect to it with XCUIApplication using bundle ID
+            app = XCUIApplication(bundleIdentifier: "com.example.cropper")
+        } else {
+            // Fall back to default XCUIApplication behavior
+            print("Could not find app bundle, using default XCUIApplication()")
+            app = XCUIApplication()
+            app.launch()
+        }
         
-        // Launch the app
-        app.launch()
-        
-        print("App state after launch: \(app.state.rawValue)")
+        print("App state: \(app.state.rawValue)")
         print("App exists: \(app.exists)")
         
-        // Wait for the app to fully launch and become active
+        // Wait for the app to be in foreground
         let launched = app.wait(for: .runningForeground, timeout: 10)
-        print("App launched successfully: \(launched)")
-        print("App state after wait: \(app.state.rawValue)")
+        print("App in foreground: \(launched)")
         
         XCTAssertTrue(launched, "App should launch and be in foreground")
         
