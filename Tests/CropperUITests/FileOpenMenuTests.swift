@@ -13,62 +13,75 @@ final class FileOpenMenuTests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         
-        // For SPM executable targets, we need to launch the app bundle manually
+        // For SPM executable targets, we need to find and launch the app bundle
         // Try to find the app bundle in common locations
         let possiblePaths = [
             ".build/release/Cropper.app",
+            "../.build/release/Cropper.app",
+            "../../.build/release/Cropper.app",
             "../../../.build/release/Cropper.app",
             "../../../../.build/release/Cropper.app",
-            FileManager.default.currentDirectoryPath + "/.build/release/Cropper.app"
         ]
         
-        var appBundlePath: String?
+        print("Current directory: \(FileManager.default.currentDirectoryPath)")
+        
+        var appBundleURL: URL?
         for path in possiblePaths {
-            let url = URL(fileURLWithPath: path)
-            if FileManager.default.fileExists(atPath: url.path) {
-                appBundlePath = url.path
-                print("Found app bundle at: \(appBundlePath!)")
+            let url = URL(fileURLWithPath: path, relativeTo: URL(fileURLWithPath: FileManager.default.currentDirectoryPath))
+            let absoluteURL = url.standardizedFileURL
+            print("Checking path: \(absoluteURL.path)")
+            if FileManager.default.fileExists(atPath: absoluteURL.path) {
+                appBundleURL = absoluteURL
+                print("✅ Found app bundle at: \(absoluteURL.path)")
                 break
             }
         }
         
-        if let bundlePath = appBundlePath {
-            // Launch the app using NSWorkspace first to ensure it's running
-            let bundleURL = URL(fileURLWithPath: bundlePath)
-            let configuration = NSWorkspace.OpenConfiguration()
-            configuration.activates = true
-            
-            // Launch the app
-            NSWorkspace.shared.openApplication(at: bundleURL, configuration: configuration) { runningApp, error in
-                if let error = error {
-                    print("Failed to launch app: \(error)")
-                }
-            }
-            
-            // Give it a moment to launch
-            Thread.sleep(forTimeInterval: 2.0)
-            
-            // Now connect to it with XCUIApplication using bundle ID
-            app = XCUIApplication(bundleIdentifier: "com.example.cropper")
+        if let bundleURL = appBundleURL {
+            // Use XCUIApplication with the URL directly
+            app = XCUIApplication(url: bundleURL)
+            print("Initialized XCUIApplication with URL: \(bundleURL.path)")
         } else {
             // Fall back to default XCUIApplication behavior
-            print("Could not find app bundle, using default XCUIApplication()")
+            print("⚠️ Could not find app bundle, using default XCUIApplication()")
             app = XCUIApplication()
-            app.launch()
         }
         
-        print("App state: \(app.state.rawValue)")
+        // Launch the app
+        print("Launching app...")
+        app.launch()
+        
+        print("App state after launch: \(app.state.rawValue)")
         print("App exists: \(app.exists)")
         
         // Wait for the app to be in foreground
         let launched = app.wait(for: .runningForeground, timeout: 10)
         print("App in foreground: \(launched)")
         
+        if !launched {
+            print("❌ App failed to reach foreground state")
+            print("Current app state: \(app.state.rawValue)")
+        }
+        
         XCTAssertTrue(launched, "App should launch and be in foreground")
         
+        // Give the app a moment to fully initialize its menu bar
+        Thread.sleep(forTimeInterval: 1.0)
+        
         // Wait for the File menu to exist, indicating the menu bar is initialized
-        let fileMenu = app.menuBars.menuItems["File"]
+        print("Waiting for File menu...")
+        let fileMenu = app.menuBars.menuBarItems["File"]
         let menuReady = fileMenu.waitForExistence(timeout: 5)
+        print("File menu ready: \(menuReady)")
+        
+        if !menuReady {
+            print("❌ File menu not found")
+            print("Available menu bar items:")
+            for item in app.menuBars.menuBarItems.allElementsBoundByIndex {
+                print("  - \(item.title)")
+            }
+        }
+        
         XCTAssertTrue(menuReady, "File menu should exist after app launch")
     }
     
