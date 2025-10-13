@@ -97,12 +97,16 @@ final class FileOpenMenuTests: XCTestCase {
         // Click on File menu to open it
         fileMenuItem.click()
         
-        // Give the menu a moment to open
-        Thread.sleep(forTimeInterval: 0.5)
-        
-        // Find and verify the "Open..." menu item
+        // Wait for the "Open..." menu item to appear after opening the File menu
         // Try MainMenu approach first
         var openMenuItem = app.menus["MainMenu"].menuItems["Open..."]
+        // Fall back to menuBar approach if needed
+        if !openMenuItem.waitForExistence(timeout: 2) {
+            openMenuItem = menuBar.menuItems["Open..."]
+            // Wait for existence again in case menuBar is needed
+            let exists = openMenuItem.waitForExistence(timeout: 2)
+            XCTAssertTrue(exists, "Open... menu item should exist in File menu after opening File menu")
+        }
         
         // Fall back to menuBar approach if needed
         if !openMenuItem.exists {
