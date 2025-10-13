@@ -41,21 +41,34 @@ final class FileOpenMenuTests: XCTestCase {
     /// Test that the File → Open menu item shows the standard file dialog
     /// with expected controls (Open and Cancel buttons).
     func testFileOpenMenuShowsDialog() throws {
-        // Access the menu bar
+        // Access the menu bar via app.menuBars (standard approach for macOS)
         let menuBar = app.menuBars
         
-        // Navigate to File menu
-        let fileMenu = menuBar.menuBarItems["File"]
-        XCTAssertTrue(fileMenu.exists, "File menu should exist in the menu bar")
+        // Try accessing via MainMenu first (as specified in requirements)
+        var fileMenuItem = app.menus["MainMenu"].menuItems["File"]
+        
+        // If MainMenu approach doesn't work, use the standard menuBarItems approach
+        if !fileMenuItem.exists {
+            fileMenuItem = menuBar.menuBarItems["File"]
+        }
+        
+        XCTAssertTrue(fileMenuItem.exists, "File menu item should exist")
         
         // Click on File menu to open it
-        fileMenu.click()
+        fileMenuItem.click()
         
         // Give the menu a moment to open
         Thread.sleep(forTimeInterval: 0.5)
         
         // Find and verify the "Open..." menu item
-        let openMenuItem = menuBar.menuItems["Open..."]
+        // Try MainMenu approach first
+        var openMenuItem = app.menus["MainMenu"].menuItems["Open..."]
+        
+        // Fall back to menuBar approach if needed
+        if !openMenuItem.exists {
+            openMenuItem = menuBar.menuItems["Open..."]
+        }
+        
         XCTAssertTrue(openMenuItem.exists, "Open... menu item should exist in File menu")
         XCTAssertTrue(openMenuItem.isEnabled, "Open... menu item should be enabled")
         
