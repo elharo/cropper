@@ -16,7 +16,7 @@ The application implements a complete menu bar with the following structure:
 
 #### 🗂 File Menu
 - **New** (⌘N) - Create a new image (disabled)
-- **Open...** (⌘O) - Open an image file (disabled)
+- **Open...** (⌘O) - Open an image file
 - **Close** (⌘W) - Close current window
 - **Save** (⌘S) - Save current image (disabled)
 - **Save As...** (⇧⌘S) - Save image with new name (disabled)
