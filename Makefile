@@ -3,8 +3,9 @@ APP_NAME = Cropper
 BUILD_DIR = .build
 RELEASE_DIR = $(BUILD_DIR)/release
 APP_BUNDLE = $(RELEASE_DIR)/$(APP_NAME).app
+XCODE_PROJECT = $(APP_NAME).xcodeproj
 
-.PHONY: all build run clean install app
+.PHONY: all build run clean install app test generate-xcodeproj
 
 all: app
 
@@ -27,9 +28,25 @@ app: build
 run: app
 	open $(APP_BUNDLE)
 
+generate-xcodeproj:
+	@if [ ! -d "$(XCODE_PROJECT)" ]; then \
+		echo "Generating Xcode project..."; \
+		$(SWIFT) package generate-xcodeproj; \
+	fi
+
+test: generate-xcodeproj app
+	@echo "Running UI tests (requires non-headless macOS environment)..."
+	@echo "Building and testing with xcodebuild..."
+	@xcodebuild test \
+		-project $(XCODE_PROJECT) \
+		-scheme Cropper-Package \
+		-destination 'platform=macOS' \
+		-only-testing:CropperUITests
+
 clean:
 	$(SWIFT) package clean
 	rm -rf $(BUILD_DIR)
+	rm -rf $(XCODE_PROJECT)
 
 install: app
 	cp -r $(APP_BUNDLE) ~/Applications/

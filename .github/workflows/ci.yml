@@ -51,3 +51,10 @@ jobs:
     - name: Run executable (basic test)
       run: |
         echo "quit" | timeout 5 ./.build/debug/Cropper || true
+      
+    - name: Run UI tests
+      run: make test
+      env:
+        # UI tests require graphical environment
+        # GitHub Actions macOS runners have a graphical environment available
+        DISPLAY: :0
