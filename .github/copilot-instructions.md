@@ -66,6 +66,7 @@ Cropper is a simple image editing tools project focused on Swift development. Th
 - Focus on simplicity and ease of use
 - Prioritize core cropping functionality over advanced features
 - Ensure compatibility with common image formats (JPEG, PNG, etc.)
+- PNG is the most critical image format for this project. JPEG is second. Others can be added if requested or they do not significantly complexify code.
 - Design APIs that are intuitive for other developers to use
 - This is only for Mac OS X. It only runs and builds on Mac OS X. It should not have any code or features meant for other platforms like Linux ir iOS.
 - It is a GUI application, not a command line application. It can build at the command line but it only launches in a GUI.
