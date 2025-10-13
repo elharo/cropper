@@ -5,7 +5,7 @@
     <key>CFBundleExecutable</key>
     <string>Cropper</string>
     <key>CFBundleIdentifier</key>
-    <string>com.example.cropper</string>
+    <string>com.elharo.cropper</string>
     <key>CFBundleName</key>
     <string>Cropper</string>
     <key>CFBundleDisplayName</key>
@@ -28,6 +28,6 @@
         <false/>
     </dict>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2025 Elliotte Rusty Harold. All rights reserved.</string>
+    <string>Copyright 2025 Elliotte Rusty Harold. All rights reserved.</string>
 </dict>
 </plist>
