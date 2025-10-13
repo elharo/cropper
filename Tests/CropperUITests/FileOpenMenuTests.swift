@@ -66,8 +66,10 @@ final class FileOpenMenuTests: XCTestCase {
         
         XCTAssertTrue(launched, "App should launch and be in foreground")
         
-        // Give the app a moment to fully initialize its menu bar
-        Thread.sleep(forTimeInterval: 1.0)
+        // Wait for the File menu to exist, indicating the menu bar is initialized
+        let fileMenu = app.menuBars.menuItems["File"]
+        let menuReady = fileMenu.waitForExistence(timeout: 5)
+        XCTAssertTrue(menuReady, "File menu should exist after app launch")
     }
     
     override func tearDownWithError() throws {
