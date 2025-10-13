@@ -34,6 +34,7 @@ Cropper is a simple image editing tools project focused on Swift development. Th
 - Test edge cases like empty images, invalid formats, or extreme dimensions
 - Mock external dependencies in tests
 - Ensure tests are fast and reliable
+- Use XCUITest to test the GUI
 
 ### Documentation Requirements
 
@@ -53,6 +54,12 @@ Cropper is a simple image editing tools project focused on Swift development. Th
 
 - Use appropriate data structures for image manipulation
 - Implement lazy loading where beneficial
+
+### Build Guidelines
+
+- Code is typically built and run from the terminal.
+- Code can be edited, built, and run from the command line.
+- XCode might be used to work on this project but is never required. 
 
 ## Specific to This Project
 
