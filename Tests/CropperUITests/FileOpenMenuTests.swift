@@ -13,7 +13,11 @@ final class FileOpenMenuTests: XCTestCase {
         continueAfterFailure = false
         
         // Initialize the application
+        // For SPM projects, XCUIApplication() will use the app bundle built by the test
         app = XCUIApplication()
+        
+        // Set launch arguments if needed for testing
+        app.launchArguments = []
         
         // Launch the app
         app.launch()

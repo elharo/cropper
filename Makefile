@@ -34,14 +34,24 @@ generate-xcodeproj:
 		$(SWIFT) package generate-xcodeproj; \
 	fi
 
-test: generate-xcodeproj app
+test: generate-xcodeproj
 	@echo "Running UI tests (requires non-headless macOS environment)..."
 	@echo "Building and testing with xcodebuild..."
-	@xcodebuild test \
+	@echo ""
+	@echo "Available schemes:"
+	@xcodebuild -project $(XCODE_PROJECT) -list 2>/dev/null || true
+	@echo ""
+	@echo "Running tests..."
+	@set -o pipefail && xcodebuild test \
 		-project $(XCODE_PROJECT) \
 		-scheme Cropper-Package \
 		-destination 'platform=macOS' \
-		-only-testing:CropperUITests
+		-only-testing:CropperUITests 2>&1 | \
+		tee xcodebuild.log | \
+		grep -E "(Test Suite|Test Case|Testing started|Testing|passed|failed|Executed)" || \
+		(echo "❌ Test execution failed. Check xcodebuild.log for details." && exit 1)
+	@echo ""
+	@echo "✅ Tests completed successfully"
 
 clean:
 	$(SWIFT) package clean
