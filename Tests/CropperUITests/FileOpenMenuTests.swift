@@ -17,7 +17,6 @@ final class FileOpenMenuTests: XCTestCase {
         app = XCUIApplication()
         
         print("🔍 Current directory: \(FileManager.default.currentDirectoryPath)")
-        print("🔍 XCUIApplication bundle ID: \(app.bundleIdentifier ?? "none")")
         
         // Launch the app
         print("🚀 Launching app...")
