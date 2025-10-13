@@ -13,8 +13,11 @@ final class FileOpenMenuTests: XCTestCase {
         continueAfterFailure = false
         
         // Initialize the application
-        // For SPM projects, XCUIApplication() will use the app bundle built by the test
         app = XCUIApplication()
+        
+        // Print debug info
+        print("App bundle identifier: \(app.bundleIdentifier ?? "none")")
+        print("App state before launch: \(app.state.rawValue)")
         
         // Set launch arguments if needed for testing
         app.launchArguments = []
@@ -22,8 +25,14 @@ final class FileOpenMenuTests: XCTestCase {
         // Launch the app
         app.launch()
         
+        print("App state after launch: \(app.state.rawValue)")
+        print("App exists: \(app.exists)")
+        
         // Wait for the app to fully launch and become active
         let launched = app.wait(for: .runningForeground, timeout: 10)
+        print("App launched successfully: \(launched)")
+        print("App state after wait: \(app.state.rawValue)")
+        
         XCTAssertTrue(launched, "App should launch and be in foreground")
         
         // Give the app a moment to fully initialize its menu bar

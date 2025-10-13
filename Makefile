@@ -27,7 +27,7 @@ app: build
 run: app
 	open $(APP_BUNDLE)
 
-test: app
+test:
 	@echo "Running UI tests (requires non-headless macOS environment)..."
 	@echo "Building and testing with xcodebuild..."
 	@echo ""
