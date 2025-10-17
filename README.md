@@ -170,6 +170,19 @@ To add functionality to the menu items:
 
 ### Testing the Application
 
+#### UI Tests
+
+The project includes XCUITests for verifying GUI functionality:
+
+```bash
+# Run all UI tests
+make test
+```
+
+UI tests verify menu functionality, dialogs, and user interactions. See `Tests/README.md` for more details.
+
+#### Manual Testing
+
 Build and run the application to test menu functionality through the GUI interface.
 
 ## Architecture
