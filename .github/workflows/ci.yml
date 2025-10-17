@@ -81,8 +81,4 @@ jobs:
         export DISPLAY=:0
         
         # Run tests
-        make test || {
-          echo "❌ UI tests failed or could not run"
-          echo "Note: UI tests require a non-headless macOS environment"
-          exit 1
-        }
+        make test
