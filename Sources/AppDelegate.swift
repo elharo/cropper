@@ -6,7 +6,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var contentViewController: ViewController!
     var imageWindowControllers: [ImageWindowController] = []
     
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
+    @MainActor func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Create the main window
         let windowRect = NSMakeRect(100, 100, 600, 400)
         window = NSWindow(contentRect: windowRect,
@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
-    private func setupMenuBar() {
+    @MainActor private func setupMenuBar() {
         let mainMenu = NSMenu()
         
         // App Menu (Cropper)
