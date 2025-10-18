@@ -6,7 +6,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var contentViewController: ViewController!
     var imageWindowControllers: [ImageWindowController] = []
     
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
+    @MainActor func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Create the main window
         let windowRect = NSMakeRect(100, 100, 600, 400)
         window = NSWindow(contentRect: windowRect,
@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
-    private func setupMenuBar() {
+    @MainActor private func setupMenuBar() {
         let mainMenu = NSMenu()
         
         // App Menu (Cropper)
@@ -120,7 +120,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: - Menu Actions
     
-    @objc func showAbout() {
+    @MainActor @objc func showAbout() {
         let alert = NSAlert()
         alert.messageText = "Cropper"
         alert.informativeText = "Simple Image Editing Tools\n\nVersion 1.0\n\nCopyright © 2025 Elliotte Rusty Harold"
@@ -133,7 +133,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // TODO: Implement new file functionality
     }
     
-    @objc func openFile() {
+    @MainActor @objc func openFile() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Open Image"
         openPanel.canChooseFiles = true
@@ -147,7 +147,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    private func openImageFile(at url: URL) {
+    @MainActor private func openImageFile(at url: URL) {
         guard let image = NSImage(contentsOf: url) else {
             let alert = NSAlert()
             alert.messageText = "Failed to Open Image"
@@ -173,12 +173,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         windowController.showWindow(nil)
     }
     
-    @objc private func imageWindowWillClose(_ notification: Notification) {
+    @MainActor @objc private func imageWindowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow else { return }
         imageWindowControllers.removeAll { $0.window == window }
     }
     
-    @objc func closeWindow() {
+    @MainActor @objc func closeWindow() {
         // Close the key window (the currently focused window)
         NSApp.keyWindow?.performClose(nil)
     }
@@ -219,7 +219,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // TODO: Implement select all functionality
     }
     
-    @objc func showHelp() {
+    @MainActor @objc func showHelp() {
         let alert = NSAlert()
         alert.messageText = "Cropper Help"
         alert.informativeText = "Cropper is a simple image editing tool.\n\nUse the File menu to open and save images.\nUse the Edit menu to modify your images."

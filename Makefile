@@ -4,7 +4,7 @@ BUILD_DIR = .build
 RELEASE_DIR = $(BUILD_DIR)/release
 APP_BUNDLE = $(RELEASE_DIR)/$(APP_NAME).app
 
-.PHONY: all build run clean install app
+.PHONY: all build run clean install app test
 
 all: app
 
@@ -26,6 +26,10 @@ app: build
 
 run: app
 	open $(APP_BUNDLE)
+
+test:
+	@echo "Running XCUITests..."
+	@./run-ui-tests.sh
 
 clean:
 	$(SWIFT) package clean

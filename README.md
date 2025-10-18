@@ -172,6 +172,12 @@ To add functionality to the menu items:
 
 Build and run the application to test menu functionality through the GUI interface.
 
+For automated UI testing, see [TESTING.md](TESTING.md) for details on running XCUITests.
+
+```bash
+make test
+```
+
 ## Architecture
 
 The application is built as a native macOS application using AppKit:
