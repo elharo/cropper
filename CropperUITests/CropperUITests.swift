@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 final class CropperUITests: XCTestCase {
     
     var app: XCUIApplication!
