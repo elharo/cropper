@@ -1,21 +1,20 @@
 import XCTest
 
-@MainActor
 final class CropperUITests: XCTestCase {
     
     var app: XCUIApplication!
     
-    override func setUpWithError() throws {
+    @MainActor override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launch()
     }
     
-    override func tearDownWithError() throws {
+    @MainActor override func tearDownWithError() throws {
         app.terminate()
     }
     
-    func testSimpleArithmetic() throws {
+    @MainActor func testSimpleArithmetic() throws {
         // XCUITest that verifies 1+1 equals 2
         // This is a UI test that happens to test arithmetic,
         // as requested in the issue
