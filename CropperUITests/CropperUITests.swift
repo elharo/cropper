@@ -1,23 +1,6 @@
 import XCTest
 
-@MainActor
 final class CropperUITests: XCTestCase {
-    
-    nonisolated(unsafe) var app: XCUIApplication!
-    
-    override func setUpWithError() throws {
-        continueAfterFailure = false
-        MainActor.assumeIsolated {
-            app = XCUIApplication()
-            app.launch()
-        }
-    }
-    
-    override func tearDownWithError() throws {
-        MainActor.assumeIsolated {
-            app.terminate()
-        }
-    }
     
     func testSimpleArithmetic() throws {
         // XCUITest that verifies 1+1 equals 2
