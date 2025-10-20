@@ -14,6 +14,11 @@ let package = Package(
             name: "Cropper",
             dependencies: [],
             path: "Sources"
+        ),
+        .testTarget(
+            name: "CropperUITests",
+            dependencies: [],
+            path: "CropperUITests"
         )
     ]
 )

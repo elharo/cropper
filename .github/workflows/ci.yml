@@ -51,3 +51,6 @@ jobs:
     - name: Run executable (basic test)
       run: |
         echo "quit" | timeout 5 ./.build/debug/Cropper || true
+    
+    - name: Run XCUITests
+      run: make test
